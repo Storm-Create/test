@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheAppBox — Приложение</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f7f5;--surface:#fff;--surface2:#f0f0ec;
+  --border:#e6e6e2;--border2:#d8d8d4;
+  --text:#111110;--text2:#666662;--text3:#a8a8a4;
+  --accent:#0066ff;--accent-bg:#eef3ff;
+  --green:#16a34a;--green-bg:#f0fdf4;
+  --r:14px;--r-sm:9px;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.05);
+  --shadow-md:0 2px 4px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.07);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.float-icon{position:absolute;border-radius:22%;overflow:hidden;opacity:0;animation:floatUp linear infinite;will-change:transform,opacity}
+.float-icon img{width:100%;height:100%;object-fit:cover;display:block}
+@keyframes floatUp{
+  0%  {transform:translateY(0) rotate(var(--r0)) scale(1);opacity:0}
+  7%  {opacity:var(--mop)}
+  85% {opacity:var(--mop)}
+  100%{transform:translateY(var(--travel)) rotate(var(--r1)) scale(var(--sc));opacity:0}
+}
+
+header{position:sticky;top:0;z-index:200;background:rgba(247,247,245,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.hdr{max-width:800px;margin:0 auto;padding:0 24px;height:58px;display:flex;align-items:center;gap:16px}
+.back{display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--accent);font-size:14px;font-weight:500;transition:opacity .15s}
+.back:hover{opacity:.7}
+.back svg{width:16px;height:16px;stroke:var(--accent);fill:none;stroke-width:2}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;margin-left:auto}
+.logo-img{width:28px;height:28px;border-radius:7px;overflow:hidden;border:1px solid rgba(0,0,0,.07)}
+.logo-img img{width:100%;height:100%;object-fit:cover;display:block}
+.logo-name{font-size:13px;font-weight:700;letter-spacing:-.4px}
+.logo-name sup{font-size:9px;font-weight:500;color:var(--text3);letter-spacing:0;vertical-align:super}
+
+.page{max-width:800px;margin:0 auto;padding:0 24px 80px;position:relative;z-index:1}
+
+.app-hero{padding:40px 0 28px;display:flex;gap:24px;align-items:flex-start;animation:fadeUp .35s ease both}
+.hero-icon{width:92px;height:92px;flex-shrink:0;border-radius:22px;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:44px;overflow:hidden}
+.hero-icon img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-info{flex:1;min-width:0}
+.h-cat{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:6px}
+.h-name{font-size:clamp(22px,3.5vw,30px);font-weight:700;letter-spacing:-.5px;line-height:1.15;margin-bottom:8px}
+.h-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tag{font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:500;padding:3px 9px;border-radius:6px}
+.tv{color:var(--accent);background:var(--accent-bg)}
+.tsz{color:var(--text2);background:var(--surface2);border:1px solid var(--border)}
+.tnew{color:var(--green);background:var(--green-bg);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+
+hr{border:none;border-top:1px solid var(--border);margin:0 0 28px}
+
+.sec{margin-bottom:32px;animation:fadeUp .4s ease both}
+.stitle{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:12px}
+
+.desc p{font-size:15px;line-height:1.7;color:var(--text2)}
+.desc p+p{margin-top:10px}
+
+.dl-wrap{display:flex;flex-direction:column;gap:8px}
+.dl-btn{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 16px;border-radius:var(--r);
+  border:1.5px solid var(--border);background:var(--surface);
+  text-decoration:none;color:var(--text);
+  font-family:inherit;font-size:14px;font-weight:500;
+  transition:all .15s;position:relative;
+}
+.dl-btn:hover{border-color:var(--border2);box-shadow:var(--shadow);transform:translateX(3px)}
+.dl-btn.primary{background:var(--text);color:#fff;border-color:var(--text)}
+.dl-btn.primary:hover{background:#222}
+.dl-btn.tg{border-color:#229ED9;color:#229ED9}
+.dl-btn.tg:hover{background:#f0f8ff}
+.dl-btn.yd{border-color:#e84c1e;color:#e84c1e}
+.dl-btn.yd:hover{background:#fff5f3}
+.dl-ico{width:34px;height:34px;flex-shrink:0;border-radius:9px;background:rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;font-size:17px}
+.dl-btn.primary .dl-ico{background:rgba(255,255,255,.12)}
+.dl-btn.tg .dl-ico{background:#e5f4fb}
+.dl-btn.yd .dl-ico{background:#fdf0ec}
+.dl-lbl{}
+.dl-sub{font-size:11px;font-weight:400;opacity:.6;display:block;margin-top:1px}
+.dl-arr{margin-left:auto;width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;opacity:.35}
+
+.info-tbl{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.irow{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border)}
+.irow:last-child{border-bottom:none}
+.ik{font-size:13px;color:var(--text2)}
+.iv{font-size:13px;font-weight:500;font-family:'JetBrains Mono',monospace;color:var(--text)}
+
+.rel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.card-rel{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px;text-decoration:none;color:inherit;
+  display:flex;gap:11px;align-items:center;
+  transition:all .15s;
+}
+.card-rel:hover{box-shadow:var(--shadow);border-color:var(--border2);transform:translateY(-1px)}
+.rel-ico{width:42px;height:42px;flex-shrink:0;border-radius:11px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;border:1px solid var(--border)}
+.rel-ico img{width:100%;height:100%;object-fit:cover;display:block}
+.rn{font-size:13px;font-weight:600;letter-spacing:-.1px}
+.rc{font-size:11px;color:var(--text3);margin-top:1px}
+
+.err{padding:80px 24px;text-align:center;color:var(--text3)}
+.err h2{font-size:18px;margin-bottom:8px;color:var(--text2)}
+.err a{color:var(--accent)}
+
+footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;position:relative;z-index:1}
+footer a{color:var(--text3);text-decoration:none}
+footer a:hover{color:var(--accent)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div id="bg-canvas"></div>
+
+<header>
+  <div class="hdr">
+    <a href="index.html" class="back">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Назад
+    </a>
+    <a href="index.html" class="logo">
+      <div class="logo-img"><img src="theappbox.jpg" alt="TheAppBox"></div>
+      <span class="logo-name">theappbox<sup>.io</sup></span>
+    </a>
+  </div>
+</header>
+
+<div class="page" id="pageContent">
+  <div class="err"><h2>Загрузка…</h2></div>
+</div>
+
+<footer>
+  <p>theappbox.io &nbsp;·&nbsp; <a href="https://t.me/theappboxio" target="_blank" rel="noopener">✈️ Telegram-канал</a> &nbsp;·&nbsp; 2026</p>
+</footer>
+
+<script>
+
+const DEFAULT_APPS=[
+  {id:"spotify",name:"Spotify++",icon:"🎵",category:"Музыка",version:"8.9.42",size:"86 MB",ios:"14.0+",updated:"12.06.2026",description:"Spotify с Premium без подписки. Без рекламы, неограниченные пропуски, 320 kbps.\n\nМодификация не требует джейлбрейка. Установка через AltStore или Sideloadly.",featured:true,isNew:true,links:{direct:{url:"https://t.me/theappboxio",label:"Скачать напрямую",sub:"Быстро, без регистрации"},yandex:{url:"https://disk.yandex.ru/ex",label:"Яндекс Диск",sub:"Резервная ссылка"},telegram:{url:"https://t.me/theappboxio",label:"Telegram-канал",sub:"Пост с файлом и инструкцией"}}},
+  {id:"youtube",name:"YouTube Premium",icon:"▶️",category:"Видео",version:"19.22.1",size:"124 MB",ios:"15.0+",updated:"01.06.2026",description:"YouTube без рекламы, фоновое воспроизведение, скачивание видео. PiP на всех устройствах.",featured:true,isNew:false,links:{direct:{url:"https://t.me/theappboxio",label:"Скачать напрямую",sub:"Быстро, без регистрации"},telegram:{url:"https://t.me/theappboxio",label:"Telegram-канал",sub:"Пост с файлом и инструкцией"},yandex:{url:"https://disk.yandex.ru/ex2",label:"Яндекс Диск",sub:"Резервная ссылка"}}},
+  {id:"instagram",name:"Instagram Rocket",icon:"📸",category:"Соцсети",version:"302.0",size:"78 MB",ios:"15.0+",updated:"25.05.2026",description:"Instagram — скачивание фото, видео и Stories. Отключение рекламы, анонимный просмотр.",featured:true,isNew:false,links:{direct:{url:"https://t.me/theappboxio",label:"Скачать напрямую",sub:"Быстро, без регистрации"},telegram:{url:"https://t.me/theappboxio",label:"Telegram-канал",sub:"Пост с файлом и инструкцией"}}},
+  {id:"tiktok",name:"TikTok++",icon:"🎶",category:"Соцсети",version:"34.1.0",size:"215 MB",ios:"14.0+",updated:"18.05.2026",description:"TikTok без водяных знаков. HD-экспорт видео, отключённая реклама.",featured:false,isNew:true,links:{direct:{url:"https://t.me/theappboxio",label:"Скачать напрямую",sub:"Быстро, без регистрации"},telegram:{url:"https://t.me/theappboxio",label:"Telegram-канал",sub:"Пост с файлом и инструкцией"}}},
+  {id:"whatsapp",name:"WhatsApp+",icon:"💬",category:"Мессенджеры",version:"24.10.81",size:"57 MB",ios:"14.0+",updated:"05.06.2026",description:"WhatsApp с расширенными настройками: скрытие статуса «в сети», темы, скачивание статусов.",featured:false,isNew:false,links:{direct:{url:"https://t.me/theappboxio",label:"Скачать напрямую",sub:"Быстро, без регистрации"},telegram:{url:"https://t.me/theappboxio",label:"Telegram-канал",sub:"Пост с файлом и инструкцией"},yandex:{url:"https://disk.yandex.ru/ex6",label:"Яндекс Диск",sub:"Резервная ссылка"}}},
+  {id:"procreate",name:"Procreate",icon:"🎨",category:"Творчество",version:"5.3.7",size:"308 MB",ios:"15.4+",updated:"20.04.2026",description:"Профессиональное рисование. Полная версия без покупок, 200+ кистей, Apple Pencil.",featured:false,isNew:false,links:{telegram:{url:"https://t.me/theappboxio",label:"Telegram-канал",sub:"Пост с файлом и инструкцией"},yandex:{url:"https://disk.yandex.ru/ex7",label:"Яндекс Диск",sub:"Резервная ссылка"}}},
+  {id:"minecraft",name:"Minecraft",icon:"⛏️",category:"Игры",version:"1.21.1",size:"712 MB",ios:"14.0+",updated:"08.06.2026",description:"Полная версия Minecraft: все режимы, скины и текстур-паки без дополнительных покупок.",featured:false,isNew:true,links:{direct:{url:"https://t.me/theappboxio",label:"Скачать напрямую",sub:"Быстро, без регистрации"},telegram:{url:"https://t.me/theappboxio",label:"Telegram-канал",sub:"Пост с файлом и инструкцией"},yandex:{url:"https://disk.yandex.ru/ex8",label:"Яндекс Диск",sub:"Резервная ссылка"}}},
+];
+function loadApps(){try{const s=localStorage.getItem('tab_apps');return s?JSON.parse(s):DEFAULT_APPS}catch{return DEFAULT_APPS}}
+const APPS=loadApps();
+
+(function(){
+  const c=document.getElementById('bg-canvas');
+  const n=12,sz=[36,46,54,62,42];
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');el.className='float-icon';
+    const s=sz[i%sz.length];
+    const x=Math.random()*96;const dur=20+Math.random()*26;const delay=-(Math.random()*dur);
+    const travel=-(window.innerHeight+s+40);
+    const r0=(Math.random()-.5)*18;const r1=r0+(Math.random()-.5)*28;
+    const sc=0.82+Math.random()*.32;const mop=0.05+Math.random()*.09;
+    el.style.cssText=`width:${s}px;height:${s}px;left:${x}%;bottom:${-s}px;border-radius:${s*.22}px;--r0:${r0}deg;--r1:${r1}deg;--travel:${travel}px;--sc:${sc};--mop:${mop};animation-duration:${dur}s;animation-delay:${delay}s`;
+    const img=document.createElement('img');img.src='theappbox.jpg';img.alt='';
+    el.appendChild(img);c.appendChild(el);
+  }
+})();
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function icoEl(icon,w,r){
+  const isP=icon&&(icon.includes('/')||/\.(png|jpg|jpeg|webp|svg)$/i.test(icon));
+  const inner=isP?`<img src="${icon}" alt="" onerror="this.parentNode.textContent='📦'">`:(icon||'📦');
+  return`<div class="hero-icon" style="width:${w}px;height:${w}px;border-radius:${r}px;font-size:${Math.round(w*.47)}px">${inner}</div>`;
+}
+function relIco(icon){
+  const isP=icon&&(icon.includes('/')||/\.(png|jpg|jpeg|webp|svg)$/i.test(icon));
+  return`<div class="rel-ico">${isP?`<img src="${icon}" alt="" onerror="this.parentNode.textContent='📦'">`:(icon||'📦')}</div>`;
+}
+
+const DL_EMO={direct:'⬇️',telegram:'✈️',yandex:'☁️',site:'🌐',other:'🔗'};
+const DL_CLS={direct:'primary',telegram:'tg',yandex:'yd',site:'',other:''};
+
+function renderApp(app){
+  const descHTML=app.description.split('\n').filter(Boolean).map(l=>`<p>${esc(l)}</p>`).join('');
+
+  const dlHTML=Object.entries(app.links).map(([k,v])=>`
+    <a class="dl-btn ${DL_CLS[k]||''}" href="${v.url}" target="_blank" rel="noopener">
+      <span class="dl-ico">${DL_EMO[k]||'🔗'}</span>
+      <span class="dl-lbl">${esc(v.label)}<span class="dl-sub">${esc(v.sub)}</span></span>
+      <svg class="dl-arr" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>`).join('');
+
+  const rel=APPS.filter(a=>a.id!==app.id&&a.category===app.category).slice(0,4);
+  const relHTML=rel.length?`<div class="sec" style="animation-delay:.2s">
+    <div class="stitle">Похожие приложения</div>
+    <div class="rel-grid">${rel.map(r=>`<a class="card-rel" href="app.html?id=${r.id}">${relIco(r.icon)}<div><div class="rn">${esc(r.name)}</div><div class="rc">${esc(r.category)}</div></div></a>`).join('')}</div>
+  </div>`:'';
+
+  document.title=`${app.name} — TheAppBox`;
+  document.getElementById('pageContent').innerHTML=`
+    <div class="app-hero">
+      ${icoEl(app.icon,92,22)}
+      <div class="hero-info">
+        <div class="h-cat">${esc(app.category)}</div>
+        <div class="h-name">${esc(app.name)}</div>
+        <div class="h-meta">
+          <span class="tag tv">v${esc(app.version)}</span>
+          <span class="tag tsz">${esc(app.size)}</span>
+          ${app.isNew?'<span class="tag tnew">New</span>':''}
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="sec">
+      <div class="stitle">Скачать</div>
+      <div class="dl-wrap">${dlHTML}</div>
+    </div>
+    <div class="sec" style="animation-delay:.08s">
+      <div class="stitle">Описание</div>
+      <div class="desc">${descHTML}</div>
+    </div>
+    <div class="sec" style="animation-delay:.12s">
+      <div class="stitle">Информация</div>
+      <div class="info-tbl">
+        <div class="irow"><span class="ik">Версия</span><span class="iv">${esc(app.version)}</span></div>
+        <div class="irow"><span class="ik">Размер</span><span class="iv">${esc(app.size)}</span></div>
+        <div class="irow"><span class="ik">iOS</span><span class="iv">${esc(app.ios||'—')}</span></div>
+        <div class="irow"><span class="ik">Категория</span><span class="iv">${esc(app.category)}</span></div>
+        <div class="irow"><span class="ik">Обновлено</span><span class="iv">${esc(app.updated||'—')}</span></div>
+      </div>
+    </div>
+    ${relHTML}
+  `;
+}
+
+const id=new URLSearchParams(location.search).get('id');
+const app=APPS.find(a=>a.id===id);
+if(app)renderApp(app);
+else document.getElementById('pageContent').innerHTML=`<div class="err"><h2>Приложение не найдено</h2><p><a href="index.html">Вернуться в каталог →</a></p></div>`;
+</script>
+</body>
+</html>
